@@ -117,11 +117,15 @@ $venvPythonVersion = & python --version 2>&1
 if ($venvPythonVersion -match "Python (\d+\.\d+)\.(\d+)") {
     $majorMinor = $matches[1]
     $patch = $matches[2]
+    $fullVersion = "$majorMinor.$patch"
     Write-Host "[INFO] Python venv: $venvPythonVersion" -ForegroundColor Cyan
-    if ($majorMinor -eq "3.10") {
-        Write-Host "[OK] Python 3.10.x détecté dans venv" -ForegroundColor Green
+    if ($fullVersion -eq "3.10.11") {
+        Write-Host "[OK] Python 3.10.11 détecté dans venv (version cible)" -ForegroundColor Green
+    } elseif ($majorMinor -eq "3.10") {
+        Write-Host "[WARNING] Python 3.10.11 recommandé, trouvé: $venvPythonVersion" -ForegroundColor Yellow
+        Write-Host "[INFO] Continuons avec Python 3.10.$patch..." -ForegroundColor Cyan
     } else {
-        Write-Host "[WARNING] Python 3.10.x recommandé, trouvé: $venvPythonVersion" -ForegroundColor Yellow
+        Write-Host "[WARNING] Python 3.10.11 recommandé, trouvé: $venvPythonVersion" -ForegroundColor Yellow
         Write-Host "[INFO] Continuons avec la version disponible..." -ForegroundColor Cyan
     }
 } else {

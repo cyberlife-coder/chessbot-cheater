@@ -20,6 +20,11 @@ Write-Host "[ACTIVATE] Activation et vérification..." -ForegroundColor Yellow
 # Vérifier version Python dans venv
 $venvPython = & python --version 2>&1
 Write-Host "[INFO] Python venv: $venvPython" -ForegroundColor Cyan
+if ($venvPython -match "Python 3\.10\.11") {
+    Write-Host "[OK] Python 3.10.11 détecté (version cible)" -ForegroundColor Green
+} else {
+    Write-Host "[WARNING] Python 3.10.11 recommandé" -ForegroundColor Yellow
+}
 
 # Installer dépendances
 Write-Host "[INSTALL] Installation dépendances..." -ForegroundColor Yellow
