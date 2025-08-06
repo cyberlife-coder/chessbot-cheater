@@ -1,20 +1,20 @@
 # Script SIMPLE et RAPIDE pour environnement ChessBot GPU
 # Version minimaliste pour utilisateurs expérimentés
 
-Write-Host "🚀 Setup ChessBot GPU - Version Express" -ForegroundColor Green
+Write-Host "[SETUP] Setup ChessBot GPU - Version Express" -ForegroundColor Green
 
 # Vérifications rapides
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    Write-Host "❌ Python requis: https://python.org" -ForegroundColor Red; exit 1
+    Write-Host "[ERROR] Python requis: https://python.org" -ForegroundColor Red; exit 1
 }
 
 # Créer environnement
-Write-Host "📦 Création venv..." -ForegroundColor Yellow
+Write-Host "[CREATE] Création venv..." -ForegroundColor Yellow
 if (Test-Path "venv_chessbot_gpu") { Remove-Item -Recurse -Force "venv_chessbot_gpu" }
 python -m venv venv_chessbot_gpu --upgrade-deps
 
 # Activer et installer
-Write-Host "⚡ Installation dépendances..." -ForegroundColor Yellow
+Write-Host "[INSTALL] Installation dépendances..." -ForegroundColor Yellow
 & ".\venv_chessbot_gpu\Scripts\Activate.ps1"
 python -m pip install --upgrade pip
 
@@ -28,7 +28,7 @@ pip install tensorflow-gpu==2.13.1
 pip install numpy==1.24.3 opencv-python==4.8.1.78 ultralytics==8.1.20 scikit-learn==1.3.2 pyclipper==1.3.0.post5 flask==3.0.2 stockfish==3.28.0
 
 # Test rapide
-Write-Host "🧪 Test GPU..." -ForegroundColor Yellow
+Write-Host "[TEST] Test GPU..." -ForegroundColor Yellow
 python -c "import torch, tensorflow as tf; print(f'PyTorch CUDA: {torch.cuda.is_available()}'); print(f'TensorFlow GPU: {len(tf.config.list_physical_devices(\"GPU\"))}')"
 
-Write-Host "✅ Terminé! Activez avec: .\venv_chessbot_gpu\Scripts\Activate.ps1" -ForegroundColor Green
+Write-Host "[SUCCESS] Terminé! Activez avec: .\venv_chessbot_gpu\Scripts\Activate.ps1" -ForegroundColor Green
