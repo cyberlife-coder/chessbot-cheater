@@ -10,6 +10,7 @@ from typing import Optional, Tuple
 
 import cv2  # type: ignore
 import numpy as np  # type: ignore
+from gpu_config import GPUConfig
 
 try:
     import pyautogui  # type: ignore
@@ -83,6 +84,9 @@ def detect_fen(image: np.ndarray) -> str:
     sys.path.append(os.path.join(os.path.dirname(__file__), "chess-snapshot-api"))
     from detectors.chess_position_detector import ChessPositionDetector  # type: ignore
 
+    gpu_config = GPUConfig()
+    print(f"🖥️ Configuration GPU: {gpu_config.get_device_info()}")
+    
     model_dir = os.path.join(os.path.dirname(__file__), "chess-snapshot-api", "models")
     if not os.path.exists(os.path.join(model_dir, "chess_pieces.model.pt")) or not os.path.exists(os.path.join(model_dir, "lattice_points.model.keras")):
         raise FileNotFoundError("Modèles manquants dans chess-snapshot-api/models.")
@@ -177,16 +181,22 @@ def call_local_stockfish(fen: str) -> Optional[str]:
         print(f"Chemin stockfish introuvable: {STOCKFISH_PATH}")
         return None
     
-    # Validate FEN position
     print(f"Initialisation Stockfish avec FEN: {fen}")
     if not is_valid_fen(fen):
         print(f"FEN invalide: {fen}")
         return None
     
     try:
-        sf = Stockfish(STOCKFISH_PATH)
+        sf = Stockfish(STOCKFISH_PATH, parameters={
+            "Threads": os.cpu_count() or 4,
+            "Hash": 512,
+            "Minimum Thinking Time": 100,
+            "Skill Level": 15,
+        })
         sf.set_fen_position(fen)
         print(f"Position FEN définie")
+        
+        sf.set_depth(12)
         best_move = sf.get_best_move()
         print(f"Meilleur coup trouvé: {best_move}")
         return best_move
