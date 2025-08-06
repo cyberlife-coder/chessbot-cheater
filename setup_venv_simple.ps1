@@ -13,9 +13,16 @@ Write-Host "[CREATE] Création venv..." -ForegroundColor Yellow
 if (Test-Path "venv_chessbot_gpu") { Remove-Item -Recurse -Force "venv_chessbot_gpu" }
 python -m venv venv_chessbot_gpu --upgrade-deps
 
-# Activer et installer
-Write-Host "[INSTALL] Installation dépendances..." -ForegroundColor Yellow
+# Activer et vérifier
+Write-Host "[ACTIVATE] Activation et vérification..." -ForegroundColor Yellow
 & ".\venv_chessbot_gpu\Scripts\Activate.ps1"
+
+# Vérifier version Python dans venv
+$venvPython = & python --version 2>&1
+Write-Host "[INFO] Python venv: $venvPython" -ForegroundColor Cyan
+
+# Installer dépendances
+Write-Host "[INSTALL] Installation dépendances..." -ForegroundColor Yellow
 python -m pip install --upgrade pip
 
 # PyTorch CUDA 11.8 (versions exactes)

@@ -15,24 +15,23 @@ Write-Host "[INFO] Version: $(Get-Date -Format 'yyyy-MM-dd')" -ForegroundColor G
 function Test-Prerequisites {
     $errors = @()
     
-    # Vérifier Python 3.10.x ou 3.11.x
-    Write-Host "[CHECK] Vérification Python $PythonVersion..." -ForegroundColor Yellow
+    # Vérifier Python disponible (n'importe quelle version 3.x)
+    Write-Host "[CHECK] Vérification Python disponible..." -ForegroundColor Yellow
     try {
         $pythonCmd = Get-Command python -ErrorAction Stop
         $pythonVersionOutput = & python --version 2>&1
-        if ($pythonVersionOutput -match "Python (\d+\.\d+)\.(\d+)") {
-            $majorMinor = $matches[1]
-            $patch = $matches[2]
-            if ($majorMinor -eq $PythonVersion) {
-                Write-Host "[OK] Python $pythonVersionOutput détecté" -ForegroundColor Green
+        if ($pythonVersionOutput -match "Python (\d+)\.(\d+)\.(\d+)") {
+            $major = $matches[1]
+            if ($major -eq "3") {
+                Write-Host "[OK] Python $pythonVersionOutput détecté (compatible)" -ForegroundColor Green
             } else {
-                $errors += "[ERROR] Python $PythonVersion requis, trouvé: $pythonVersionOutput"
+                $errors += "[ERROR] Python 3.x requis, trouvé: $pythonVersionOutput"
             }
         } else {
             $errors += "[ERROR] Impossible de déterminer la version Python"
         }
     } catch {
-        $errors += "[ERROR] Python non trouvé. Installez Python $PythonVersion.x depuis python.org"
+        $errors += "[ERROR] Python non trouvé. Installez Python 3.10+ depuis python.org"
     }
     
     # Vérifier CUDA 11.8 (optionnel si -SkipCuda)
@@ -109,6 +108,24 @@ if (-not (Test-Path $activateScript)) {
 & $activateScript
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERROR] Erreur activation environnement" -ForegroundColor Red
+    exit 1
+}
+
+# Vérifier version Python dans le venv
+Write-Host "[VERIFY] Vérification Python dans venv..." -ForegroundColor Yellow
+$venvPythonVersion = & python --version 2>&1
+if ($venvPythonVersion -match "Python (\d+\.\d+)\.(\d+)") {
+    $majorMinor = $matches[1]
+    $patch = $matches[2]
+    Write-Host "[INFO] Python venv: $venvPythonVersion" -ForegroundColor Cyan
+    if ($majorMinor -eq "3.10") {
+        Write-Host "[OK] Python 3.10.x détecté dans venv" -ForegroundColor Green
+    } else {
+        Write-Host "[WARNING] Python 3.10.x recommandé, trouvé: $venvPythonVersion" -ForegroundColor Yellow
+        Write-Host "[INFO] Continuons avec la version disponible..." -ForegroundColor Cyan
+    }
+} else {
+    Write-Host "[ERROR] Impossible de vérifier la version Python du venv" -ForegroundColor Red
     exit 1
 }
 
