@@ -1,9 +1,14 @@
 import cv2 as cv
 import numpy as np
+import sys
+import os
 
 from keras.models import load_model
 from sklearn.cluster import DBSCAN
 from utils.other import median_distance
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from gpu_config import GPUConfig
 
 
 class IntersectionsDetector:
@@ -82,6 +87,9 @@ class IntersectionsDetector:
     @staticmethod
     def filter_intersections(image, intersections, size=10):
         """Filter intersections to remove false positives"""
+        gpu_config = GPUConfig()
+        gpu_config.configure_tensorflow_gpu()
+        
         model = load_model('models/lattice_points.model.keras')
 
         filtered_intersections = []
@@ -107,7 +115,8 @@ class IntersectionsDetector:
 
             X = dimg.reshape(1, 21, 21, 1) / 255.0
 
-            predict_x = model(X)
+            with gpu_config.device_context():
+                predict_x = model(X)
             classes_x = np.argmax(predict_x, axis=1)
             prediction, confidence = classes_x[0], predict_x[0][classes_x[0]]
 
