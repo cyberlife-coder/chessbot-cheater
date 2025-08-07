@@ -36,7 +36,7 @@ chess_bot.py
      |
      | (Image Capture & FEN Detection)
      v
-chess-snapshot-api/
+chess-snapshot-api/         
      |
      | (Position Analysis)
      v

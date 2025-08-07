@@ -151,7 +151,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Installer TensorFlow GPU (version exacte testée)
 Write-Host "[INSTALL] Installation TensorFlow GPU 2.13.1..." -ForegroundColor Yellow
-& pip install tensorflow-gpu==2.13.1
+& pip install tensorflow==2.13.1
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERROR] Erreur installation TensorFlow" -ForegroundColor Red
     exit 1

@@ -34,7 +34,7 @@ python -m pip install --upgrade pip
 pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
 
 # TensorFlow GPU
-pip install tensorflow-gpu==2.13.1
+pip install tensorflow==2.13.1
 
 # Dépendances projet
 pip install numpy==1.24.3 opencv-python==4.8.1.78 ultralytics==8.1.20 scikit-learn==1.3.2 pyclipper==1.3.0.post5 flask==3.0.2 stockfish==3.28.0

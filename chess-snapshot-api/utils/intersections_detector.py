@@ -1,7 +1,8 @@
 import cv2 as cv
 import numpy as np
+import os
 
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from sklearn.cluster import DBSCAN
 from utils.other import median_distance
 
@@ -82,7 +83,9 @@ class IntersectionsDetector:
     @staticmethod
     def filter_intersections(image, intersections, size=10):
         """Filter intersections to remove false positives"""
-        model = load_model('models/lattice_points.model.keras')
+        model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'lattice_points.model.keras')
+        model_path = os.path.abspath(model_path)
+        model = load_model(model_path)
 
         filtered_intersections = []
 

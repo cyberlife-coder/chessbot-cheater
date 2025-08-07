@@ -36,11 +36,18 @@ class ChessPositionDetector:
             xmin, ymin, xmax, ymax = box.xyxy[0]
             piece_image = image[int(ymin):int(ymax), int(xmin):int(xmax)]
 
+            # Debug: Afficher le type de pièce détecté et son compteur
+            print(f"Pièce détectée: {piece_type}, Compteur avant: {pieces_count[piece_type]}")
+
             if pieces_count[piece_type] >= pieces_max_count[piece_type]:
                 new_piece_cls = self.chess_pieces_detector.detect_piece_class(piece_image)
                 if new_piece_cls is not None:
                     piece_type = chess_pieces[int(new_piece_cls)]
+                    print(f"Pièce réétiquetée: {piece_type}")
             pieces_count[piece_type] += 1
+
+            # Debug: Afficher le compteur après incrémentation
+            print(f"Compteur après: {pieces_count[piece_type]}")
 
             x_middle = (xmin + xmax) / 2
             y_middle = ymax - (box_height / 2)
@@ -57,11 +64,18 @@ class ChessPositionDetector:
             piece_positions.append((piece_type, (row, col)))
 
         piece_positions.sort(key=lambda x: (x[1][0], x[1][1]))
+        
+        # Debug: Afficher le nombre de pièces détectées
+        print(f"[DEBUG] Nombre total de pièces détectées: {len(piece_positions)}")
+        if len(piece_positions) == 0:
+            print("[DEBUG] Aucune pièce détectée - vérifier l'image d'entrée ou le modèle YOLO")
 
         chessboard = [['.' for _ in range(8)] for _ in range(8)]
 
         for piece_type, (row, col) in piece_positions:
             chessboard[row][col] = piece_type
+            # Debug: Afficher la position de chaque pièce
+            print(f"[DEBUG] Pièce {piece_type} placée en ({row}, {col})")
 
         fen_rows = []
         for row in chessboard:
@@ -80,5 +94,20 @@ class ChessPositionDetector:
             fen_rows.append(fen_row)
 
         fen = '/'.join(fen_rows)
+
+        # Debug: Afficher la FEN générée et les compteurs de pièces
+        print(f"FEN générée: {fen}")
+        print(f"Compteurs de pièces: {pieces_count}")
+        
+        # Validation basique de la FEN générée
+        rows = fen.split('/')
+        if len(rows) != 8:
+            print(f"ERREUR: FEN invalide - {len(rows)} rangées au lieu de 8")
+        else:
+            total_kings = fen.count('K') + fen.count('k')
+            if total_kings != 2:
+                print(f"ERREUR: FEN invalide - {total_kings} roi(x) au lieu de 2")
+            else:
+                print("FEN validée: 8 rangées et 2 rois présents")
 
         return fen

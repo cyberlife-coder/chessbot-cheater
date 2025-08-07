@@ -1,0 +1,18 @@
+# Environnements virtuels Python
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Fichiers de cache
+cache/
+*.pkl
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers de configuration IDE
+.vscode/
+venv_chessbot_gpu/

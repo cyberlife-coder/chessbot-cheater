@@ -60,7 +60,7 @@ conda activate chessbot_gpu
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 
 # Installer TensorFlow GPU
-pip install tensorflow-gpu==2.13.1
+pip install tensorflow==2.13.1
 
 # Installer autres dépendances
 pip install -r chess-snapshot-api/requirements.txt
@@ -148,7 +148,7 @@ pip install -r chess-snapshot-api/requirements.txt
 
 ### Erreur TensorFlow GPU
 1. Vérifier cuDNN 8.6 dans le dossier CUDA
-2. Réinstaller: `pip uninstall tensorflow tensorflow-gpu && pip install tensorflow-gpu==2.13.1`
+2. Réinstaller: `pip uninstall tensorflow tensorflow-gpu && pip install tensorflow==2.13.1`
 3. Redémarrer PowerShell
 
 ### Performance dégradée
